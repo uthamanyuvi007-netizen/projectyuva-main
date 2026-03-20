@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/register", "destination": "/register.html" },
+    { "source": "/admin-dashboard", "destination": "/admin-dashboard.html" },
+    { "source": "/teacher-dashboard", "destination": "/teacher-dashboard.html" },
+    { "source": "/student-dashboard", "destination": "/student-dashboard.html" },
+    { "source": "/exams", "destination": "/exams.html" },
+    { "source": "/exam", "destination": "/exam.html" },
+    { "source": "/question-bank", "destination": "/question-bank.html" },
+    { "source": "/create-exam", "destination": "/create-exam.html" },
+    { "source": "/results", "destination": "/results.html" },
+    { "source": "/profile", "destination": "/profile.html" },
+    { "source": "/monitoring", "destination": "/monitoring.html" }
+  ]
+}
