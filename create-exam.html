@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Exam - Online Examination & Proctoring System</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <!-- <link rel="stylesheet" href="/css/style.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
@@ -268,7 +268,8 @@
                             </div>
                             <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
                                 <div class="form-group" style="margin-top: 1rem;">
-                                    <label class="form-label">End Date & Time (Deadline) <span style="font-size: 0.8rem; color: #8b949e;">- Optional</span></label>
+                                    <label class="form-label">End Date & Time (Deadline) <span
+                                            style="font-size: 0.8rem; color: #8b949e;">- Optional</span></label>
                                     <input type="datetime-local" class="form-control" id="exam-end-date">
                                 </div>
                             </div>
@@ -375,12 +376,12 @@
 
         document.getElementById('exam-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             if (selectedQuestions.length === 0) {
                 showToast('Please select at least one question from the Question Bank before creating the exam.', 'error');
                 return;
             }
-            
+
             const exam = {
                 title: document.getElementById('exam-title').value,
                 subject: document.getElementById('exam-subject').value,

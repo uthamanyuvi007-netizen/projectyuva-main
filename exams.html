@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Available Exams - Online Examination & Proctoring System</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <!-- <link rel="stylesheet" href="/css/style.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
@@ -254,8 +254,10 @@
 
             <div class="question-filters" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
                 <div style="position: relative; flex: 1; min-width: 250px;">
-                    <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #8b949e;"></i>
-                    <input type="text" id="search-filter" class="form-control" placeholder="Search exams by title..." style="padding-left: 2.5rem;" oninput="loadExams()">
+                    <i class="fas fa-search"
+                        style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #8b949e;"></i>
+                    <input type="text" id="search-filter" class="form-control" placeholder="Search exams by title..."
+                        style="padding-left: 2.5rem;" oninput="loadExams()">
                 </div>
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                     <select class="select-control" id="subject-filter" style="width: 180px;" onchange="loadExams()">

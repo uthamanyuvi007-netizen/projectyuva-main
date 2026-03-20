@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exam Monitoring - Online Examination & Proctoring System</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <!-- <link rel="stylesheet" href="/css/style.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
@@ -107,7 +107,8 @@
             color: #c9d1d9 !important;
         }
 
-        .form-control, .select-control {
+        .form-control,
+        .select-control {
             background-color: #21262d !important;
             border: 2px solid #30363d !important;
             color: #ffffff !important;
@@ -134,7 +135,8 @@
             color: #ffffff !important;
         }
 
-        .select-control:focus, .form-control:focus {
+        .select-control:focus,
+        .form-control:focus {
             border-color: #6C63FF !important;
             background-color: #21262d !important;
         }
@@ -266,7 +268,9 @@
                 <div class="card-body">
                     <div style="display: flex; gap: 1rem; align-items: flex-end;">
                         <div class="form-group" style="flex: 1; margin: 0;">
-                            <label class="form-label" style="color: #fff !important; font-weight: 600; display: block; margin-bottom: 0.5rem;">Select Exam to Monitor</label>
+                            <label class="form-label"
+                                style="color: #fff !important; font-weight: 600; display: block; margin-bottom: 0.5rem;">Select
+                                Exam to Monitor</label>
                             <select class="select-control" id="exam-selector">
                                 <option value="">Loading exams...</option>
                             </select>

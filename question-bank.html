@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Question Bank - Online Examination & Proctoring System</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <!-- <link rel="stylesheet" href="/css/style.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
@@ -327,7 +327,8 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline" onclick="hideModal('add-question-modal')">Cancel</button>
-                <button class="btn btn-secondary" onclick="saveQuestion(true)" style="margin-right: 0.5rem; background: #636E72; border-color: #636E72; color: #fff;">
+                <button class="btn btn-secondary" onclick="saveQuestion(true)"
+                    style="margin-right: 0.5rem; background: #636E72; border-color: #636E72; color: #fff;">
                     <i class="fas fa-plus"></i> Save & Add Another
                 </button>
                 <button class="btn btn-primary" onclick="saveQuestion(false)">
@@ -438,7 +439,7 @@
             const result = await addQuestion(question);
             if (result.success) {
                 showToast('Question added successfully!', 'success');
-                
+
                 if (!keepOpen) {
                     window.hideModal('add-question-modal');
                     const form = document.getElementById('add-question-form');
@@ -450,7 +451,7 @@
                     document.getElementById('q-answer').value = '';
                     document.getElementById('q-text').focus();
                 }
-                
+
                 await loadQuestions();
             } else {
                 showToast(result.message, 'error');
