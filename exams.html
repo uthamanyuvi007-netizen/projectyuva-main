@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Exams - Online Examination & Proctoring System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #0d1117;
+        }
+
+        .dashboard {
+            background: #0d1117;
+        }
+
+        .sidebar {
+            background: #161b22;
+            border-right: 1px solid #30363d;
+        }
+
+        .sidebar-header {
+            background: #1f2937;
+        }
+
+        .sidebar-brand {
+            color: #fff !important;
+        }
+
+        .sidebar-link {
+            color: #c9d1d9 !important;
+        }
+
+        .sidebar-link:hover {
+            background: #21262d !important;
+            color: #58a6ff !important;
+        }
+
+        .sidebar-link.active {
+            background: #6C63FF !important;
+            color: #fff !important;
+        }
+
+        .sidebar-section-title {
+            color: #8b949e;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid #30363d;
+        }
+
+        .user-info {
+            background: #21262d;
+        }
+
+        .user-name {
+            color: #fff !important;
+        }
+
+        .user-role {
+            color: #8b949e !important;
+        }
+
+        .user-avatar {
+            background: linear-gradient(135deg, #6C63FF 0%, #8B85FF 100%);
+        }
+
+        .main-content {
+            background: #0d1117;
+        }
+
+        .dashboard-header {
+            background: #161b22;
+            border: 1px solid #30363d;
+        }
+
+        .page-title {
+            color: #fff !important;
+        }
+
+        .btn-outline {
+            border-color: #30363d;
+            color: #c9d1d9;
+        }
+
+        .btn-outline:hover {
+            background: #21262d;
+            color: #fff;
+        }
+
+        .question-filters {
+            background: #161b22;
+            padding: 1.5rem;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid #30363d;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-label {
+            color: #c9d1d9 !important;
+        }
+
+        .select-control {
+            background: #21262d;
+            border-color: #30363d;
+            color: #fff;
+            padding: 0.875rem 1rem;
+            border-radius: var(--border-radius);
+        }
+
+        .select-control:focus {
+            background: #21262d !important;
+            border-color: #6C63FF;
+            color: #fff !important;
+            outline: none;
+        }
+
+        .select-control option {
+            background: #21262d;
+            color: #fff;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #30363d;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            background: #21262d;
+            color: #fff;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #6C63FF;
+            background: #21262d !important;
+            color: #fff !important;
+        }
+
+        .form-control::placeholder {
+            color: #8b949e;
+        }
+
+        .exam-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .exam-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .exam-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .exam-card-header {
+            padding: 1.5rem;
+            background: var(--gradient-primary);
+            color: var(--white);
+        }
+
+        .exam-card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: white !important;
+        }
+
+        .exam-card-subject {
+            opacity: 0.9;
+            font-size: 0.875rem;
+        }
+
+        .exam-card-body {
+            padding: 1.5rem;
+        }
+
+        .exam-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #8b949e;
+            margin-bottom: 0.5rem;
+        }
+
+        .exam-info-item i {
+            color: #6C63FF;
+        }
+
+        .exam-card-footer {
+            padding: 1rem 1.5rem;
+            background: #21262d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge-success {
+            background: rgba(0, 200, 83, 0.2);
+            color: #3fb950;
+        }
+
+        .badge-warning {
+            background: rgba(255, 179, 0, 0.2);
+            color: #d29922;
+        }
+
+        .empty-state {
+            color: #8b949e;
+        }
+
+        .empty-title {
+            color: #fff !important;
+        }
+
+        .empty-description {
+            color: #8b949e;
+        }
+    </style>
+</head>
+
+<body class="requires-auth">
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="sidebar-brand">
+                    <i class="fas fa-graduation-cap"></i>
+                    Zentrix
+                </a>
+            </div>
+            <div class="sidebar-menu" id="sidebar-menu"></div>
+            <div class="sidebar-footer">
+                <div class="user-info" id="user-info"></div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1 class="page-title">Available Exams</h1>
+                <div class="header-actions">
+                    <a href="/" class="btn btn-outline"><i class="fas fa-home"></i> Home</a>
+                    <a href="/student-dashboard" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back</a>
+                </div>
+            </div>
+
+            <div class="question-filters" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <div style="position: relative; flex: 1; min-width: 250px;">
+                    <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #8b949e;"></i>
+                    <input type="text" id="search-filter" class="form-control" placeholder="Search exams by title..." style="padding-left: 2.5rem;" oninput="loadExams()">
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <select class="select-control" id="subject-filter" style="width: 180px;" onchange="loadExams()">
+                        <option value="">All Subjects</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="exam-grid" id="exam-grid">
+                <div class="loading-spinner" style="margin: 3rem auto; grid-column: 1/-1;"></div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import {
+            getAvailableExams, renderSidebar, renderExamCard, checkRole
+        } from "./js/main.js";
+
+        if (!checkRole('student', 'teacher', 'admin')) { }
+        renderSidebar();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadExams();
+            await loadSubjects();
+        });
+
+        window.loadExams = async function () {
+            const result = await getAvailableExams();
+            const container = document.getElementById('exam-grid');
+            const subjectFilterElement = document.getElementById('subject-filter');
+            const subjectFilter = subjectFilterElement ? subjectFilterElement.value : "";
+            const searchFilterElement = document.getElementById('search-filter');
+            const searchFilter = searchFilterElement ? searchFilterElement.value.toLowerCase() : "";
+
+            if (result.success && result.data.length > 0) {
+                let exams = result.data;
+                if (subjectFilter) { exams = exams.filter(e => e.subject === subjectFilter); }
+                if (searchFilter) { exams = exams.filter(e => (e.title || '').toLowerCase().includes(searchFilter)); }
+
+                if (exams.length === 0) {
+                    container.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;"><div class="empty-icon">📝</div><h3 class="empty-title">No Exams Found</h3><p class="empty-description">No exams available for the selected criteria.</p></div>`;
+                    return;
+                }
+
+                let html = '';
+                exams.forEach(exam => { html += renderExamCard(exam); });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;"><div class="empty-icon">📝</div><h3 class="empty-title">No Exams Available</h3><p class="empty-description">Check back later for new exams.</p></div>`;
+            }
+        }
+
+        async function loadSubjects() {
+            const result = await getAvailableExams();
+            const select = document.getElementById('subject-filter');
+            if (result.success && select) {
+                const subjects = [...new Set(result.data.map(e => e.subject))];
+                subjects.forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject;
+                    option.textContent = subject;
+                    select.appendChild(option);
+                });
+            }
+        }
+
+        window.startExam = function (examId) { window.location.href = `/exam?id=${examId}`; }
+        window.viewExam = function (examId) { window.location.href = `/results?exam=${examId}`; }
+    </script>
+</body>
+
+</html>

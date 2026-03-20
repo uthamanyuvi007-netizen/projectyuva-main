@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Online Examination & Proctoring System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #0d1117;
+        }
+
+        .dashboard {
+            background: #0d1117;
+        }
+
+        .sidebar {
+            background: #161b22;
+            border-right: 1px solid #30363d;
+        }
+
+        .sidebar-header {
+            background: #1f2937;
+        }
+
+        .sidebar-brand {
+            color: #fff !important;
+        }
+
+        .sidebar-link {
+            color: #c9d1d9 !important;
+        }
+
+        .sidebar-link:hover {
+            background: #21262d !important;
+            color: #58a6ff !important;
+        }
+
+        .sidebar-link.active {
+            background: #6C63FF !important;
+            color: #fff !important;
+        }
+
+        .sidebar-section-title {
+            color: #8b949e;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid #30363d;
+        }
+
+        .user-info {
+            background: #21262d;
+        }
+
+        .user-name {
+            color: #fff !important;
+        }
+
+        .user-role {
+            color: #8b949e !important;
+        }
+
+        .user-avatar {
+            background: linear-gradient(135deg, #6C63FF 0%, #8B85FF 100%);
+        }
+
+        .main-content {
+            background: #0d1117;
+        }
+
+        .profile-container {
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #6C63FF 0%, #8B85FF 100%);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 3rem;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-name {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            color: white !important;
+        }
+
+        .profile-email {
+            opacity: 0.9;
+            color: white !important;
+        }
+
+        .profile-form {
+            background: #161b22;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            border: 1px solid #30363d;
+        }
+
+        .card-title {
+            color: #fff !important;
+        }
+
+        .form-label {
+            color: #c9d1d9 !important;
+        }
+
+        .form-control {
+            background: #21262d;
+            border-color: #30363d;
+            color: #fff;
+        }
+
+        .form-control:focus {
+            background: #21262d;
+            border-color: #6C63FF;
+            color: #fff;
+        }
+
+        .form-control:disabled {
+            background: #161b22;
+            color: #8b949e;
+        }
+
+        .btn-outline {
+            border-color: #30363d;
+            color: #c9d1d9;
+        }
+
+        .btn-outline:hover {
+            background: #21262d;
+            color: #fff;
+        }
+
+        .dashboard-header {
+            background: #161b22;
+            border: 1px solid #30363d;
+        }
+
+        .page-title {
+            color: #fff !important;
+        }
+    </style>
+</head>
+
+<body class="requires-auth">
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="sidebar-brand">
+                    <i class="fas fa-graduation-cap"></i>
+                    Zentrix
+                </a>
+            </div>
+            <div class="sidebar-menu" id="sidebar-menu"></div>
+            <div class="sidebar-footer">
+                <div class="user-info" id="user-info"></div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1 class="page-title">My Profile</h1>
+                <div class="header-actions">
+                    <a href="/" class="btn btn-outline"><i class="fas fa-home"></i> Home</a>
+                    <button class="btn btn-outline" onclick="logout()"><i class="fas fa-sign-out-alt"></i>
+                        Logout</button>
+                </div>
+            </div>
+
+            <div class="profile-container">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profile-avatar"><i class="fas fa-user"></i></div>
+                    <h1 class="profile-name" id="profile-name">Loading...</h1>
+                    <p class="profile-email" id="profile-email">...</p>
+                    <span class="badge badge-primary" id="profile-role" style="margin-top: 0.5rem;">...</span>
+                </div>
+
+                <div class="profile-form">
+                    <div class="card-header" style="background: transparent; border: none; padding-bottom: 0;">
+                        <h3 class="card-title">Edit Profile</h3>
+                    </div>
+                    <div class="card-body" style="padding-top: 0;">
+                        <div id="alert-container"></div>
+                        <form id="profile-form">
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Role</label>
+                                <input type="text" class="form-control" id="role" disabled>
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save
+                                    Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="profile-form" style="margin-top: 1.5rem;">
+                    <div class="card-header" style="background: transparent; border: none; padding-bottom: 0;">
+                        <h3 class="card-title">Account Information</h3>
+                    </div>
+                    <div class="card-body" style="padding-top: 0;">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                            <div
+                                style="padding: 1rem; background: #21262d; border-radius: var(--border-radius); border: 1px solid #30363d;">
+                                <p style="color: #8b949e; margin-bottom: 0.25rem; font-size: 0.875rem;">Account Status
+                                </p>
+                                <p style="font-weight: 600; margin: 0; color: #fff;" id="account-status">Active</p>
+                            </div>
+                            <div
+                                style="padding: 1rem; background: #21262d; border-radius: var(--border-radius); border: 1px solid #30363d;">
+                                <p style="color: #8b949e; margin-bottom: 0.25rem; font-size: 0.875rem;">Member Since</p>
+                                <p style="font-weight: 600; margin: 0; color: #fff;" id="member-since">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import {
+            updateProfile, renderSidebar, logout,
+            showToast, checkRole, formatDate
+        } from "./js/main.js";
+
+        window.logout = logout;
+
+        if (!checkRole('admin', 'teacher', 'student')) { }
+        renderSidebar();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user) {
+                document.getElementById('profile-name').textContent = user.name;
+                document.getElementById('profile-email').textContent = user.email;
+                document.getElementById('profile-role').textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+                document.getElementById('name').value = user.name;
+                document.getElementById('email').value = user.email;
+                document.getElementById('role').value = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+                const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                document.getElementById('profile-avatar').textContent = initials;
+                document.getElementById('member-since').textContent = user.createdAt ? formatDate(user.createdAt) : formatDate(new Date().toISOString());
+            }
+        });
+
+        document.getElementById('profile-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nameEl = document.getElementById('name');
+            const emailEl = document.getElementById('email');
+            const name = nameEl ? nameEl.value : "";
+            const email = emailEl ? emailEl.value : "";
+
+            const result = await updateProfile({ name, email });
+            if (result.success) {
+                const user = JSON.parse(localStorage.getItem('user'));
+                user.name = name;
+                user.email = email;
+                localStorage.setItem('user', JSON.stringify(user));
+
+                const profNameEl = document.getElementById('profile-name');
+                const profEmEl = document.getElementById('profile-email');
+                const profAvEl = document.getElementById('profile-avatar');
+
+                if (profNameEl) profNameEl.textContent = name;
+                if (profEmEl) profEmEl.textContent = email;
+                if (profAvEl) {
+                    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+                    profAvEl.textContent = initials;
+                }
+                showToast('Profile updated successfully!', 'success');
+            } else {
+                showToast(result.message, 'error');
+            }
+        });
+    </script>
+</body>
+
+</html>

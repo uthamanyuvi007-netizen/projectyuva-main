@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Online Examination & Proctoring System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #0d1117;
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+            background: #0d1117;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #161b22;
+            border-right: 1px solid #30363d;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            background: #1f2937;
+            padding: 1.5rem;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .sidebar-brand {
+            color: #fff !important;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+
+        .sidebar-section {
+            padding: 0 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-section-title {
+            color: #8b949e;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-link {
+            color: #c9d1d9 !important;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-link:hover {
+            background: #21262d !important;
+            color: #58a6ff !important;
+        }
+
+        .sidebar-link.active {
+            background: #6C63FF !important;
+            color: #fff !important;
+        }
+
+        .sidebar-link i {
+            font-size: 1.1rem;
+            width: 20px;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-top: 1px solid #30363d;
+            padding: 1rem;
+            background: #161b22;
+        }
+
+        .user-info {
+            background: #21262d;
+            padding: 0.75rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6C63FF 0%, #8B85FF 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-name {
+            color: #fff !important;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-role {
+            color: #8b949e !important;
+            font-size: 0.75rem;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 0;
+            background: #0d1117;
+            min-height: 100vh;
+        }
+
+        .dashboard-header {
+            background: #161b22;
+            border: 1px solid #30363d;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .page-title {
+            color: #fff !important;
+            font-size: 1.75rem;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .content-area {
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            padding: 1.5rem;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .stat-card.primary::before {
+            background: linear-gradient(135deg, #6C63FF 0%, #8B85FF 100%);
+        }
+
+        .stat-card.secondary::before {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+        }
+
+        .stat-card.accent::before {
+            background: linear-gradient(135deg, #00D9C0 0%, #00B4A0 100%);
+        }
+
+        .stat-card.success::before {
+            background: linear-gradient(135deg, #00C853 0%, #69F0AE 100%);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card.primary .stat-icon {
+            background: rgba(108, 99, 255, 0.1);
+            color: #6C63FF;
+        }
+
+        .stat-card.secondary .stat-icon {
+            background: rgba(255, 107, 107, 0.1);
+            color: #FF6B6B;
+        }
+
+        .stat-card.accent .stat-icon {
+            background: rgba(0, 217, 192, 0.1);
+            color: #00D9C0;
+        }
+
+        .stat-card.success .stat-icon {
+            background: rgba(0, 200, 83, 0.1);
+            color: #00C853;
+        }
+
+        .stat-value {
+            color: #fff !important;
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: #8b949e;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            color: #fff !important;
+            font-size: 1.125rem;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            color: #c9d1d9;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: #6C63FF;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a52e0;
+        }
+
+        .btn-outline {
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background: #21262d;
+            color: #fff;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: #21262d;
+            color: #c9d1d9;
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table td {
+            color: #c9d1d9;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .table tbody tr:hover {
+            background: #21262d !important;
+        }
+
+        .badge {
+            display: inline-flex;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: rgba(0, 200, 83, 0.2);
+            color: #3fb950;
+        }
+
+        .badge-warning {
+            background: rgba(255, 179, 0, 0.2);
+            color: #d29922;
+        }
+
+        .badge-danger {
+            background: rgba(255, 61, 0, 0.2);
+            color: #f85149;
+        }
+
+        .badge-info {
+            background: rgba(33, 150, 243, 0.2);
+            color: #58a6ff;
+        }
+
+        .badge-primary {
+            background: rgba(108, 99, 255, 0.2);
+            color: #a5b4fc;
+        }
+
+        .empty-state {
+            color: #8b949e;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .empty-title {
+            color: #fff !important;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #30363d;
+            border-top-color: #6C63FF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body class="requires-auth">
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="sidebar-brand">
+                    <i class="fas fa-graduation-cap"></i>
+                    Zentrix
+                </a>
+            </div>
+            <nav class="sidebar-menu" id="sidebar-menu"></nav>
+            <div class="sidebar-footer">
+                <div class="user-info" id="user-info"></div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1 class="page-title">Admin Dashboard</h1>
+                <div class="header-actions">
+                    <a href="/" class="btn btn-outline"><i class="fas fa-home"></i> Home</a>
+                    <a href="/profile" class="btn btn-outline"><i class="fas fa-user"></i> Profile</a>
+                    <button class="btn btn-outline" onclick="logout()"><i class="fas fa-sign-out-alt"></i>
+                        Logout</button>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="stats-grid" id="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">👨‍🎓</div>
+                        <div class="stat-value" id="student-count">-</div>
+                        <div class="stat-label">Total Students</div>
+                    </div>
+                    <div class="stat-card secondary">
+                        <div class="stat-icon">👨‍🏫</div>
+                        <div class="stat-value" id="teacher-count">-</div>
+                        <div class="stat-label">Total Teachers</div>
+                    </div>
+                    <div class="stat-card accent">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-value" id="exam-count">-</div>
+                        <div class="stat-label">Total Exams</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value" id="submission-count">-</div>
+                        <div class="stat-label">Total Submissions</div>
+                    </div>
+                </div>
+
+                <div class="tab-buttons">
+                    <button class="btn btn-primary" onclick="showTab('dashboard')" id="tab-dashboard"><i
+                            class="fas fa-home"></i> Dashboard</button>
+                    <button class="btn btn-outline" onclick="showTab('teachers')" id="tab-teachers"><i
+                            class="fas fa-user-plus"></i> Teacher Requests</button>
+                    <button class="btn btn-outline" onclick="showTab('users')" id="tab-users"><i
+                            class="fas fa-users"></i> All Users</button>
+                </div>
+
+                <div id="content-dashboard">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Activity</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="text-align: center; padding: 2rem; color: #8b949e;">
+                                <i class="fas fa-chart-line"
+                                    style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                <p>Welcome to Admin Dashboard! Manage all aspects of the examination system.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-teachers" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Pending Teacher Requests</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="pending-teachers-list">
+                                <div class="loading-spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-users" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">All Users</h3>
+                            <button class="btn btn-primary btn-sm" onclick="refreshUsers()"><i class="fas fa-sync"></i>
+                                Refresh</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Role</th>
+                                            <th>Status</th>
+                                            <th>Joined</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="users-table-body">
+                                        <tr>
+                                            <td colspan="6" style="text-align: center;">
+                                                <div class="loading-spinner"></div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="./js/main.js"></script>
+    <script type="module">
+        import {
+            checkRole, renderSidebar, getAdminStats, getPendingTeachers,
+            getAllUsers, approveTeacher, rejectTeacher, showToast, formatDate
+        } from "./js/main.js";
+
+        if (!checkRole('admin')) { }
+        renderSidebar();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadStats();
+            await loadPendingTeachers();
+            await loadAllUsers();
+        });
+
+        async function loadStats() {
+            const result = await getAdminStats();
+            if (result.success) {
+                const stats = result.data;
+                document.getElementById('student-count').textContent = stats.students || 0;
+                document.getElementById('teacher-count').textContent = stats.teachers || 0;
+                document.getElementById('exam-count').textContent = stats.exams || 0;
+                document.getElementById('submission-count').textContent = stats.submissions || 0;
+            }
+        }
+
+        async function loadPendingTeachers() {
+            const result = await getPendingTeachers();
+            const container = document.getElementById('pending-teachers-list');
+
+            if (result.success && result.data.length > 0) {
+                let html = '<table class="table"><thead><tr><th>Name</th><th>Email</th><th>Registered</th><th>Actions</th></tr></thead><tbody>';
+
+                result.data.forEach(teacher => {
+                    html += `
+                        <tr>
+                            <td>${teacher.name}</td>
+                            <td>${teacher.email}</td>
+                            <td>${formatDate(teacher.createdAt)}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" onclick="handleApproveTeacher('${teacher._id}')">
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                                <button class="btn btn-sm" onclick="handleRejectTeacher('${teacher._id}')" style="background: #f85149; color: white;">
+                                    <i class="fas fa-times"></i> Reject
+                                </button>
+                            </td>
+                        </tr>`;
+                });
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<div class="empty-state"><div class="empty-icon">👨‍🏫</div><h3 class="empty-title">No Pending Requests</h3><p>There are no teacher requests waiting for approval.</p></div>`;
+            }
+        }
+
+        async function loadAllUsers() {
+            const result = await getAllUsers();
+            const tbody = document.getElementById('users-table-body');
+
+            if (result.success) {
+                if (result.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No users found</td></tr>';
+                    return;
+                }
+
+                let html = '';
+                result.data.forEach(user => {
+                    const statusBadge = user.status === 'active' ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-warning">Pending</span>';
+                    const roleBadge = user.role === 'admin' ? '<span class="badge badge-danger">Admin</span>' : user.role === 'teacher' ? '<span class="badge badge-info">Teacher</span>' : '<span class="badge badge-primary">Student</span>';
+                    html += `<tr><td>${user._id}</td><td>${user.name}</td><td>${user.email}</td><td>${roleBadge}</td><td>${statusBadge}</td><td>${formatDate(user.createdAt)}</td></tr>`;
+                });
+                tbody.innerHTML = html;
+            } else {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #f85149;">Error loading users</td></tr>`;
+            }
+        }
+
+        window.handleApproveTeacher = async function (id) {
+            if (confirm('Are you sure you want to approve this teacher?')) {
+                const result = await approveTeacher(id);
+                if (result.success) {
+                    showToast('Teacher approved successfully!', 'success');
+                    await loadPendingTeachers();
+                    await loadStats();
+                    await loadAllUsers();
+                } else {
+                    showToast(result.message || 'Error approving teacher', 'error');
+                }
+            }
+        }
+
+        window.handleRejectTeacher = async function (id) {
+            if (confirm('Are you sure you want to reject this teacher request?')) {
+                const result = await rejectTeacher(id);
+                if (result.success) {
+                    showToast('Teacher request rejected!', 'success');
+                    await loadPendingTeachers();
+                    await loadAllUsers();
+                } else {
+                    showToast(result.message || 'Error rejecting teacher', 'error');
+                }
+            }
+        }
+
+        window.refreshUsers = async function () {
+            await loadAllUsers();
+            showToast('Users refreshed!', 'success');
+        }
+
+        window.showTab = function (tabName) {
+            document.getElementById('content-dashboard').style.display = 'none';
+            document.getElementById('content-teachers').style.display = 'none';
+            document.getElementById('content-users').style.display = 'none';
+
+            document.getElementById('tab-dashboard').classList.remove('btn-primary');
+            document.getElementById('tab-dashboard').classList.add('btn-outline');
+            document.getElementById('tab-teachers').classList.remove('btn-primary');
+            document.getElementById('tab-teachers').classList.add('btn-outline');
+            document.getElementById('tab-users').classList.remove('btn-primary');
+            document.getElementById('tab-users').classList.add('btn-outline');
+
+            document.getElementById(`content-${tabName}`).style.display = 'block';
+            document.getElementById(`tab-${tabName}`).classList.remove('btn-outline');
+            document.getElementById(`tab-${tabName}`).classList.add('btn-primary');
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get('tab');
+        if (tab) window.showTab(tab);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zentrix - Online Examination & Proctoring System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Subtle Animation Keyframes */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.03);
+                opacity: 0.95;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .navbar {
+            background: rgba(13, 17, 23, 0.95);
+            border-bottom: 1px solid #30363d;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        .navbar-brand {
+            color: #fff !important;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.03);
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .navbar-link {
+            color: #c9d1d9 !important;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .navbar-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #6C63FF, #00D9C0);
+            transition: width 0.3s;
+        }
+
+        .navbar-link:hover {
+            color: #58a6ff !important;
+        }
+
+        .navbar-link:hover::after {
+            width: 100%;
+        }
+
+        .navbar-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6C63FF, #8B85FF);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.4);
+        }
+
+        .btn-outline {
+            border: 2px solid #6C63FF;
+            color: #a5b4fc;
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background: rgba(108, 99, 255, 0.15);
+            color: #fff;
+            transform: translateY(-2px);
+            border-color: #8B85FF;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px 40px;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 15% 25%, rgba(108, 99, 255, 0.12) 0%, transparent 35%),
+                radial-gradient(circle at 85% 75%, rgba(0, 217, 192, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 50% 50%, rgba(255, 107, 107, 0.06) 0%, transparent 40%);
+            animation: gradientMove 10s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 700px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-icon {
+            width: 85px;
+            height: 85px;
+            background: linear-gradient(135deg, #6C63FF, #00D9C0);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(108, 99, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .logo-icon:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(108, 99, 255, 0.4);
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(108, 99, 255, 0.15);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            color: #a5b4fc;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(108, 99, 255, 0.3);
+            animation: fadeIn 0.8s ease-out both;
+        }
+
+        .hero-title {
+            font-size: 2.8rem;
+            color: #fff;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            animation: slideUp 0.6s ease-out 0.2s both;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, #6C63FF, #00D9C0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: #8b949e;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            animation: slideUp 0.6s ease-out 0.4s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            animation: slideUp 0.6s ease-out 0.6s both;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: slideUp 0.6s ease-out 0.8s both;
+        }
+
+        .hero-stat {
+            background: rgba(22, 27, 34, 0.9);
+            border: 1px solid rgba(108, 99, 255, 0.2);
+            border-radius: 14px;
+            padding: 1rem 1.5rem;
+            min-width: 130px;
+            transition: all 0.3s;
+        }
+
+        .hero-stat:hover {
+            transform: translateY(-5px);
+            border-color: rgba(108, 99, 255, 0.5);
+            box-shadow: 0 10px 25px rgba(108, 99, 255, 0.2);
+        }
+
+        .stat-icon {
+            font-size: 1.6rem;
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        .hero-stat:nth-child(1) .stat-icon {
+            color: #6C63FF;
+        }
+
+        .hero-stat:nth-child(2) .stat-icon {
+            color: #00D9C0;
+        }
+
+        .hero-stat:nth-child(3) .stat-icon {
+            color: #FF6B6B;
+        }
+
+        .hero-stat-label {
+            color: #8b949e;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .features {
+            background: #161b22;
+            padding: 60px 20px;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-tag {
+            display: inline-block;
+            background: rgba(108, 99, 255, 0.15);
+            color: #a5b4fc;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid rgba(108, 99, 255, 0.25);
+        }
+
+        .section-title {
+            color: #fff;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-description {
+            color: #8b949e;
+            font-size: 0.95rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-card {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 14px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: #6C63FF;
+            box-shadow: 0 15px 35px rgba(108, 99, 255, 0.15);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #6C63FF, #8B85FF);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.3rem;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.08);
+        }
+
+        .feature-card:nth-child(2) .feature-icon {
+            background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+        }
+
+        .feature-card:nth-child(3) .feature-icon {
+            background: linear-gradient(135deg, #00D9C0, #00B4A0);
+        }
+
+        .feature-title {
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-description {
+            color: #8b949e;
+            font-size: 0.85rem;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #161b22, #0d1117);
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .cta-title {
+            color: #fff;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-description {
+            color: #8b949e;
+            margin-bottom: 1.5rem;
+        }
+
+        footer {
+            background: #161b22;
+            border-top: 1px solid #30363d;
+            padding: 40px 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        footer h3,
+        footer h4 {
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        footer p {
+            color: #8b949e;
+            line-height: 1.6;
+        }
+
+        footer a {
+            color: #8b949e;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        footer a:hover {
+            color: #58a6ff;
+        }
+
+        footer ul {
+            list-style: none;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #30363d;
+            color: #8b949e;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .features-grid,
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="/" class="navbar-brand"><i class="fas fa-graduation-cap"></i> Zentrix</a>
+        <div class="navbar-menu">
+            <a href="#features" class="navbar-link">Features</a>
+            <a href="#contact" class="navbar-link">Contact</a>
+        </div>
+        <div class="navbar-actions">
+            <a href="/login" class="btn btn-outline">Login</a>
+            <a href="/register" class="btn btn-primary">Get Started</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="logo-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="hero-badge"><i class="fas fa-star"></i> AI-Powered Proctoring</div>
+            <h1 class="hero-title">Smart Exam <span>Proctoring</span></h1>
+            <p class="hero-description">
+                AI-powered proctoring with real-time monitoring, cheat prevention, and instant results.
+            </p>
+            <div class="hero-buttons">
+                <a href="/register" class="btn btn-primary"><i class="fas fa-rocket"></i> Get Started</a>
+                <a href="#features" class="btn btn-outline"><i class="fas fa-play"></i> Learn More</a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="stat-icon"><i class="fas fa-shield-alt"></i></span>
+                    <div class="hero-stat-label">AI Security</div>
+                </div>
+                <div class="hero-stat">
+                    <span class="stat-icon"><i class="fas fa-eye"></i></span>
+                    <div class="hero-stat-label">Live Proctoring</div>
+                </div>
+                <div class="hero-stat">
+                    <span class="stat-icon"><i class="fas fa-bolt"></i></span>
+                    <div class="hero-stat-label">Instant Results</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="section-header">
+            <span class="section-tag">Features</span>
+            <h2 class="section-title">Everything You Need</h2>
+            <p class="section-description">Tools for secure online examinations</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
+                <h3 class="feature-title">AI Proctoring</h3>
+                <p class="feature-description">Face detection & behavior analysis</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-users"></i></div>
+                <h3 class="feature-title">Role Management</h3>
+                <p class="feature-description">Admin, Teacher & Student dashboards</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-database"></i></div>
+                <h3 class="feature-title">Question Bank</h3>
+                <p class="feature-description">Organized questions by subjects</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section" id="contact">
+        <h2 class="cta-title">Ready to Get Started?</h2>
+        <p class="cta-description">Join us for secure online examinations with AI proctoring</p>
+        <div class="hero-buttons">
+            <a href="/register" class="btn btn-primary"><i class="fas fa-user-plus"></i> Create Free Account</a>
+            <a href="/login" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Login</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                <h3><i class="fas fa-graduation-cap"></i> Zentrix</h3>
+                <p>AI-powered online examination and proctoring platform.</p>
+            </div>
+            <div>
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Register</a></li>
+                    <li><a href="/exams">Exams</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Contact</h4>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> yuvarajchakkaravarthi@gmail.com</li>
+                    <li><i class="fas fa-phone"></i> 9843432622</li>
+                    <li><i class="fas fa-map-marker"></i> Madurai, Tamilnadu, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Zentrix. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="./js/main.js"></script>
+</body>
+
+</html>

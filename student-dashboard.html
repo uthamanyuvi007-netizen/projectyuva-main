@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Online Examination & Proctoring System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #0d1117;
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+            background: #0d1117;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #161b22;
+            border-right: 1px solid #30363d;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            background: #1f2937;
+            padding: 1.5rem;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .sidebar-brand {
+            color: #fff !important;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+
+        .sidebar-section {
+            padding: 0 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-section-title {
+            color: #8b949e;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-link {
+            color: #c9d1d9 !important;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-link:hover {
+            background: #21262d !important;
+            color: #58a6ff !important;
+        }
+
+        .sidebar-link.active {
+            background: #6C63FF !important;
+            color: #fff !important;
+        }
+
+        .sidebar-link i {
+            font-size: 1.1rem;
+            width: 20px;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-top: 1px solid #30363d;
+            padding: 1rem;
+            background: #161b22;
+        }
+
+        .user-info {
+            background: #21262d;
+            padding: 0.75rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6C63FF 0%, #8B85FF 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-name {
+            color: #fff !important;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-role {
+            color: #8b949e !important;
+            font-size: 0.75rem;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 0;
+            background: #0d1117;
+            min-height: 100vh;
+        }
+
+        .dashboard-header {
+            background: #161b22;
+            border: 1px solid #30363d;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .page-title {
+            color: #fff !important;
+            font-size: 1.75rem;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .content-area {
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            padding: 1.5rem;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .stat-card.primary::before {
+            background: linear-gradient(135deg, #6C63FF 0%, #8B85FF 100%);
+        }
+
+        .stat-card.secondary::before {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+        }
+
+        .stat-card.accent::before {
+            background: linear-gradient(135deg, #00D9C0 0%, #00B4A0 100%);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card.primary .stat-icon {
+            background: rgba(108, 99, 255, 0.1);
+            color: #6C63FF;
+        }
+
+        .stat-card.secondary .stat-icon {
+            background: rgba(255, 107, 107, 0.1);
+            color: #FF6B6B;
+        }
+
+        .stat-card.accent .stat-icon {
+            background: rgba(0, 217, 192, 0.1);
+            color: #00D9C0;
+        }
+
+        .stat-value {
+            color: #fff !important;
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: #8b949e;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            color: #fff;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .exam-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .exam-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .exam-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .exam-card-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #6C63FF 0%, #8B85FF 100%);
+            color: white;
+        }
+
+        .exam-card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: white !important;
+        }
+
+        .exam-card-subject {
+            opacity: 0.9;
+            font-size: 0.875rem;
+        }
+
+        .exam-card-body {
+            padding: 1.5rem;
+        }
+
+        .exam-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #8b949e;
+            margin-bottom: 0.5rem;
+        }
+
+        .exam-info-item i {
+            color: #6C63FF;
+        }
+
+        .exam-card-footer {
+            padding: 1rem 1.5rem;
+            background: #21262d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge-success {
+            background: rgba(0, 200, 83, 0.2);
+            color: #3fb950;
+        }
+
+        .badge-warning {
+            background: rgba(255, 179, 0, 0.2);
+            color: #d29922;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: #6C63FF;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a52e0;
+        }
+
+        .btn-outline {
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background: #21262d;
+            color: #fff;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #30363d;
+            border-top-color: #6C63FF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="requires-auth">
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="sidebar-brand">
+                    <i class="fas fa-graduation-cap"></i>
+                    Zentrix
+                </a>
+            </div>
+            <nav class="sidebar-menu" id="sidebar-menu"></nav>
+            <div class="sidebar-footer">
+                <div class="user-info" id="user-info"></div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1 class="page-title">Student Dashboard</h1>
+                <div class="header-actions">
+                    <a href="/" class="btn btn-outline"><i class="fas fa-home"></i> Home</a>
+                    <a href="/profile" class="btn btn-outline"><i class="fas fa-user"></i> Profile</a>
+                    <button class="btn btn-outline" onclick="logout()"><i class="fas fa-sign-out-alt"></i>
+                        Logout</button>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-value" id="available-exams">-</div>
+                        <div class="stat-label">Available Exams</div>
+                    </div>
+                    <div class="stat-card secondary">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value" id="completed-exams">-</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-card accent">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-value" id="total-results">-</div>
+                        <div class="stat-label">Results</div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2 class="section-title">Available Exams</h2>
+                    <a href="/exams" class="btn btn-primary"><i class="fas fa-list"></i> View All</a>
+                </div>
+                <div class="exam-grid" id="exam-list">
+                    <div style="text-align: center; padding: 2rem; color: #8b949e; grid-column: 1/-1;">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import {
+            getAvailableExams, getResults, renderSidebar,
+            logout, formatDate, checkRole
+        } from "./js/main.js";
+
+        window.logout = logout;
+
+        if (!checkRole('admin', 'teacher', 'student')) { }
+        renderSidebar();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadStudentStats();
+            await loadExams();
+        });
+
+        async function loadStudentStats() {
+            const examsResult = await getAvailableExams();
+            const resultsResult = await getResults();
+
+            const availableExamsCount = examsResult.success ? examsResult.data.length : 0;
+            const resultsCount = resultsResult.success ? resultsResult.data.length : 0;
+
+            const avExamsEl = document.getElementById('available-exams');
+            const compExamsEl = document.getElementById('completed-exams');
+            const totalResEl = document.getElementById('total-results');
+
+            if (avExamsEl) avExamsEl.textContent = availableExamsCount;
+            if (compExamsEl) compExamsEl.textContent = resultsCount;
+            if (totalResEl) totalResEl.textContent = resultsCount;
+        }
+
+        async function loadExams() {
+            const result = await getAvailableExams();
+            const container = document.getElementById('exam-list');
+
+            if (result.success && result.data.length > 0) {
+                let html = '';
+                result.data.slice(0, 6).forEach(exam => {
+                    html += `
+                        <div class="exam-card">
+                            <div class="exam-card-header">
+                                <h3 class="exam-card-title">${exam.title}</h3>
+                                <span class="exam-card-subject">${exam.subject}</span>
+                            </div>
+                            <div class="exam-card-body">
+                                <div class="exam-info-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>Duration: ${exam.duration} minutes</span>
+                                </div>
+                                <div class="exam-info-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>${exam.scheduledDate ? formatDate(exam.scheduledDate) : 'Available now'}</span>
+                                </div>
+                                <span class="badge badge-${exam.status === 'active' ? 'success' : 'warning'}">${exam.status}</span>
+                            </div>
+                            <div class="exam-card-footer">
+                                <a href="/exam?id=${exam._id}" class="btn btn-primary btn-sm">Start Exam</a>
+                            </div>
+                        </div>`;
+                });
+                container.innerHTML = html;
+            } else if (container) {
+                container.innerHTML = `<div style="text-align: center; padding: 3rem; color: #8b949e; grid-column: 1/-1;">
+                    <i class="fas fa-clipboard-list" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                    <p>No exams available at the moment.</p>
+                </div>`;
+            }
+        }
+    </script>
+</body>
+
+</html>

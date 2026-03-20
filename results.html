@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results - Online Examination & Proctoring System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #0d1117;
+        }
+
+        .dashboard {
+            background: #0d1117;
+        }
+
+        .sidebar {
+            background: #161b22;
+            border-right: 1px solid #30363d;
+        }
+
+        .sidebar-header {
+            background: #1f2937;
+        }
+
+        .sidebar-brand {
+            color: #fff !important;
+        }
+
+        .sidebar-link {
+            color: #c9d1d9 !important;
+        }
+
+        .sidebar-link:hover {
+            background: #21262d !important;
+            color: #58a6ff !important;
+        }
+
+        .sidebar-link.active {
+            background: #6C63FF !important;
+            color: #fff !important;
+        }
+
+        .sidebar-section-title {
+            color: #8b949e;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid #30363d;
+        }
+
+        .user-info {
+            background: #21262d;
+        }
+
+        .user-name {
+            color: #fff !important;
+        }
+
+        .user-role {
+            color: #8b949e !important;
+        }
+
+        .user-avatar {
+            background: linear-gradient(135deg, #6C63FF 0%, #8B85FF 100%);
+        }
+
+        .main-content {
+            background: #0d1117;
+        }
+
+        .dashboard-header {
+            background: #161b22;
+            border: 1px solid #30363d;
+        }
+
+        .page-title {
+            color: #fff !important;
+        }
+
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+        }
+
+        .card-title {
+            color: #fff !important;
+        }
+
+        .card-body {
+            color: #c9d1d9;
+        }
+
+        .btn-outline {
+            border-color: #30363d;
+            color: #c9d1d9;
+        }
+
+        .btn-outline:hover {
+            background: #21262d;
+            color: #fff;
+        }
+
+        .badge-success {
+            background: rgba(0, 200, 83, 0.2);
+            color: #3fb950;
+        }
+
+        .badge-warning {
+            background: rgba(255, 179, 0, 0.2);
+            color: #d29922;
+        }
+
+        .badge-danger {
+            background: rgba(255, 61, 0, 0.2);
+            color: #f85149;
+        }
+    </style>
+</head>
+
+<body class="requires-auth">
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="sidebar-brand">
+                    <i class="fas fa-graduation-cap"></i>
+                    Zentrix
+                </a>
+            </div>
+            <div class="sidebar-menu" id="sidebar-menu"></div>
+            <div class="sidebar-footer">
+                <div class="user-info" id="user-info"></div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1 class="page-title">My Results</h1>
+                <div class="header-actions">
+                    <a href="/student-dashboard" class="btn btn-outline"><i class="fas fa-home"></i> Home</a>
+                    <button class="btn btn-outline" onclick="logout()"><i class="fas fa-sign-out-alt"></i>
+                        Logout</button>
+                </div>
+            </div>
+
+            <div id="results-container">
+                <div style="text-align: center; padding: 3rem; color: #8b949e;">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import {
+            getResults, renderSidebar, logout, formatDate, checkRole
+        } from "./js/main.js";
+
+        window.logout = logout;
+
+        if (!checkRole('student', 'teacher', 'admin')) { }
+        renderSidebar();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadResults();
+        });
+
+        async function loadResults() {
+            const result = await getResults();
+            const container = document.getElementById('results-container');
+
+            if (result.success && result.data.length > 0) {
+                let html = '<div class="results-grid">';
+                result.data.forEach(r => {
+                    const statusBadge = r.passed
+                        ? '<span class="badge badge-success">Passed</span>'
+                        : '<span class="badge badge-danger">Failed</span>';
+                    html += `
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">${r.examTitle || 'Exam'}</h3>
+                                ${statusBadge}
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Score:</strong> ${r.marks}/${r.totalMarks}</p>
+                                <p><strong>Percentage:</strong> ${((r.marks / r.totalMarks) * 100).toFixed(1)}%</p>
+                                <p><strong>Date:</strong> ${formatDate(r.submittedAt)}</p>
+                            </div>
+                        </div>`;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📊</div>
+                        <h3 class="empty-title">No Results Yet</h3>
+                        <p class="empty-description">You haven't attempted any exams yet.</p>
+                        <a href="/exams" class="btn btn-primary" style="margin-top: 1rem;">View Available Exams</a>
+                    </div>`;
+            }
+        }
+    </script>
+</body>
+
+</html>

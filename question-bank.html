@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Bank - Online Examination & Proctoring System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #0d1117;
+        }
+
+        .dashboard {
+            background: #0d1117;
+        }
+
+        .sidebar {
+            background: #161b22;
+            border-right: 1px solid #30363d;
+        }
+
+        .sidebar-header {
+            background: #1f2937;
+        }
+
+        .sidebar-brand {
+            color: #fff !important;
+        }
+
+        .sidebar-link {
+            color: #c9d1d9 !important;
+        }
+
+        .sidebar-link:hover {
+            background: #21262d !important;
+            color: #58a6ff !important;
+        }
+
+        .sidebar-link.active {
+            background: #6C63FF !important;
+            color: #fff !important;
+        }
+
+        .sidebar-section-title {
+            color: #8b949e;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid #30363d;
+        }
+
+        .user-info {
+            background: #21262d;
+        }
+
+        .user-name {
+            color: #fff !important;
+        }
+
+        .user-role {
+            color: #8b949e !important;
+        }
+
+        .user-avatar {
+            background: linear-gradient(135deg, #6C63FF 0%, #8B85FF 100%);
+        }
+
+        .main-content {
+            background: #0d1117;
+        }
+
+        .dashboard-header {
+            background: #161b22;
+            border: 1px solid #30363d;
+        }
+
+        .page-title {
+            color: #fff !important;
+        }
+
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+        }
+
+        .card-title {
+            color: #fff !important;
+        }
+
+        .card-body {
+            color: #c9d1d9;
+        }
+
+        .btn-outline {
+            border-color: #30363d;
+            color: #c9d1d9;
+        }
+
+        .btn-outline:hover {
+            background: #21262d;
+            color: #fff;
+        }
+
+        .form-label {
+            color: #c9d1d9 !important;
+        }
+
+        .form-control {
+            background: #21262d;
+            border-color: #30363d;
+            color: #fff;
+        }
+
+        .form-control:focus {
+            background: #21262d !important;
+            border-color: #6C63FF;
+            color: #fff !important;
+        }
+
+        .form-control::placeholder {
+            color: #8b949e;
+        }
+
+        .select-control {
+            background: #21262d;
+            border-color: #30363d;
+            color: #fff;
+        }
+
+        .select-control:focus {
+            background: #21262d !important;
+            border-color: #6C63FF;
+            color: #fff !important;
+            outline: none;
+        }
+
+        .select-control option {
+            background: #21262d;
+            color: #fff;
+        }
+
+        .modal {
+            background: #161b22;
+            border: 1px solid #30363d;
+        }
+
+        .modal-title {
+            color: #fff !important;
+        }
+
+        .modal-close {
+            background: #21262d;
+            color: #c9d1d9;
+        }
+
+        .modal-close:hover {
+            background: #f85149;
+            color: white;
+        }
+
+        .modal-body {
+            color: #c9d1d9;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #30363d;
+        }
+
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .question-filters {
+            background: #161b22;
+            padding: 1.5rem;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid #30363d;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-label {
+            color: #c9d1d9 !important;
+        }
+
+        .question-item {
+            background: #161b22;
+            border: 1px solid #30363d;
+        }
+
+        .question-item:hover {
+            background: #1c2128;
+        }
+
+        .question-item-header {
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 1rem;
+        }
+
+        .question-type-badge {
+            color: #fff;
+        }
+
+        .question-type-badge.mcq {
+            background: rgba(108, 99, 255, 0.3);
+            color: #a5b4fc;
+        }
+
+        .question-type-badge.true-false {
+            background: rgba(0, 217, 192, 0.3);
+            color: #5eead4;
+        }
+
+        .question-type-badge.descriptive {
+            background: rgba(255, 107, 107, 0.3);
+            color: #fca5a5;
+        }
+
+        .empty-state {
+            color: #8b949e;
+        }
+
+        .empty-title {
+            color: #fff !important;
+        }
+
+        .empty-description {
+            color: #8b949e;
+        }
+    </style>
+</head>
+
+<body class="requires-auth">
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="sidebar-brand">
+                    <i class="fas fa-graduation-cap"></i>
+                    Zentrix
+                </a>
+            </div>
+            <div class="sidebar-menu" id="sidebar-menu"></div>
+            <div class="sidebar-footer">
+                <div class="user-info" id="user-info"></div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1 class="page-title">Question Bank</h1>
+                <div class="header-actions">
+                    <a href="/" class="btn btn-outline"><i class="fas fa-home"></i> Home</a>
+                    <button class="btn btn-primary" onclick="showModal('add-question-modal')">
+                        <i class="fas fa-plus"></i> Add Question
+                    </button>
+                </div>
+            </div>
+
+            <div class="question-filters">
+                <div class="filter-group">
+                    <label class="filter-label">Subject:</label>
+                    <select class="select-control" id="subject-filter" style="width: 200px;">
+                        <option value="">All Subjects</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Type:</label>
+                    <select class="select-control" id="type-filter" style="width: 150px;">
+                        <option value="">All Types</option>
+                        <option value="mcq">MCQ</option>
+                        <option value="true-false">True/False</option>
+                        <option value="descriptive">Descriptive</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="loadQuestions()">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+            </div>
+
+            <div id="questions-list">
+                <div class="loading-spinner" style="margin: 3rem auto;"></div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="add-question-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Question</h3>
+                <button class="modal-close" onclick="hideModal('add-question-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-question-form">
+                    <div class="form-group">
+                        <label class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="q-subject" placeholder="e.g., Mathematics" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Question Type</label>
+                        <select class="select-control" id="q-type" required onchange="toggleOptionsField()">
+                            <option value="mcq">MCQ</option>
+                            <option value="true-false">True/False</option>
+                            <option value="descriptive">Descriptive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Question Text</label>
+                        <textarea class="form-control" id="q-text" rows="3" placeholder="Enter your question"
+                            required></textarea>
+                    </div>
+                    <div class="form-group" id="options-group">
+                        <label class="form-label">Options (one per line)</label>
+                        <textarea class="form-control" id="q-options" rows="4"
+                            placeholder="Enter options, one per line"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Correct Answer</label>
+                        <input type="text" class="form-control" id="q-answer" placeholder="Enter correct answer"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Marks</label>
+                        <input type="number" class="form-control" id="q-marks" value="1" min="1" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="hideModal('add-question-modal')">Cancel</button>
+                <button class="btn btn-secondary" onclick="saveQuestion(true)" style="margin-right: 0.5rem; background: #636E72; border-color: #636E72; color: #fff;">
+                    <i class="fas fa-plus"></i> Save & Add Another
+                </button>
+                <button class="btn btn-primary" onclick="saveQuestion(false)">
+                    <i class="fas fa-save"></i> Save & Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import {
+            getQuestions, addQuestion, deleteQuestion,
+            renderSidebar, showToast, checkRole
+        } from "./js/main.js";
+
+        if (!checkRole('admin', 'teacher')) { }
+        renderSidebar();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadQuestions();
+        });
+
+        window.toggleOptionsField = function () {
+            const type = document.getElementById('q-type').value;
+            const optionsGroup = document.getElementById('options-group');
+            if (type === 'mcq') { optionsGroup.style.display = 'block'; }
+            else { optionsGroup.style.display = 'none'; }
+        }
+
+        window.loadQuestions = async function () {
+            const result = await getQuestions();
+            const container = document.getElementById('questions-list');
+            const subjectFilterElement = document.getElementById('subject-filter');
+            const subjectFilter = subjectFilterElement ? subjectFilterElement.value : "";
+            const typeFilterElement = document.getElementById('type-filter');
+            const typeFilter = typeFilterElement ? typeFilterElement.value : "";
+
+            if (result.success && result.data.length > 0) {
+                let questions = result.data;
+                if (subjectFilter) { questions = questions.filter(q => q.subject === subjectFilter); }
+                if (typeFilter) { questions = questions.filter(q => q.questionType === typeFilter); }
+
+                const subjects = [...new Set(result.data.map(q => q.subject))];
+                if (subjectFilterElement && subjectFilterElement.children.length === 1) {
+                    subjects.forEach(subject => {
+                        const option = document.createElement('option');
+                        option.value = subject;
+                        option.textContent = subject;
+                        subjectFilterElement.appendChild(option);
+                    });
+                }
+
+                if (questions.length === 0) {
+                    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📚</div><h3 class="empty-title">No Questions Found</h3><p class="empty-description">Add your first question to get started.</p></div>`;
+                    return;
+                }
+
+                let html = '';
+                questions.forEach(q => {
+                    const typeBadge = q.questionType === 'mcq' ? 'mcq' : q.questionType === 'true-false' ? 'true-false' : 'descriptive';
+                    html += `
+                        <div class="question-item">
+                            <div class="question-item-header">
+                                <div>
+                                    <span class="question-type-badge ${typeBadge}">${q.questionType}</span>
+                                    <span style="margin-left: 0.5rem; color: #8b949e;">${q.subject}</span>
+                                </div>
+                                <div class="question-actions">
+                                    <button class="btn btn-sm btn-outline" onclick="removeQuestion('${q._id}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <p style="font-weight: 500; margin-bottom: 0.5rem; color: #fff;">${q.questionText}</p>
+                            ${q.options && q.options.length > 0 ? `<p style="font-size: 0.875rem; color: #8b949e; margin-bottom: 0.5rem;">Options: ${q.options.join(', ')}</p>` : ''}
+                            <p style="font-size: 0.875rem; color: #8b949e;"><strong>Answer:</strong> ${q.correctAnswer} | <strong>Marks:</strong> ${q.marks}</p>
+                        </div>`;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<div class="empty-state"><div class="empty-icon">📚</div><h3 class="empty-title">No Questions Yet</h3><p class="empty-description">Create your first question to get started.</p><button class="btn btn-primary" onclick="showModal('add-question-modal')">Add Question</button></div>`;
+            }
+        }
+
+        window.saveQuestion = async function (keepOpen = false) {
+            const subject = document.getElementById('q-subject').value;
+            const questionType = document.getElementById('q-type').value;
+            const questionText = document.getElementById('q-text').value;
+            const optionsText = document.getElementById('q-options').value;
+            const correctAnswer = document.getElementById('q-answer').value;
+            const marks = document.getElementById('q-marks').value;
+
+            if (!subject || !questionText || !correctAnswer) {
+                showToast('Please fill all required fields', 'warning');
+                return;
+            }
+
+            const optionsArray = optionsText ? optionsText.split('\n').filter(o => o.trim()) : [];
+            const question = {
+                subject,
+                question_type: questionType,
+                question_text: questionText,
+                options: optionsArray,
+                correct_answer: correctAnswer,
+                marks: parseInt(marks)
+            };
+
+            const result = await addQuestion(question);
+            if (result.success) {
+                showToast('Question added successfully!', 'success');
+                
+                if (!keepOpen) {
+                    window.hideModal('add-question-modal');
+                    const form = document.getElementById('add-question-form');
+                    if (form) form.reset();
+                } else {
+                    // Just clear the question text, options, and answer. Keep subject & type to be fast!
+                    document.getElementById('q-text').value = '';
+                    document.getElementById('q-options').value = '';
+                    document.getElementById('q-answer').value = '';
+                    document.getElementById('q-text').focus();
+                }
+                
+                await loadQuestions();
+            } else {
+                showToast(result.message, 'error');
+            }
+        }
+
+        window.removeQuestion = async function (id) {
+            if (confirm('Are you sure you want to delete this question?')) {
+                const result = await deleteQuestion(id);
+                if (result.success) { showToast('Question deleted!', 'success'); await loadQuestions(); }
+                else { showToast(result.message, 'error'); }
+            }
+        }
+
+        window.showModal = function (id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        window.hideModal = function (id) {
+            document.getElementById(id).classList.remove('active');
+        }
+    </script>
+</body>
+
+</html>
