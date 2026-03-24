@@ -177,6 +177,11 @@
                     const statusBadge = r.passed
                         ? '<span class="badge badge-success">Passed</span>'
                         : '<span class="badge badge-danger">Failed</span>';
+                    const marks = r.marks ?? 0;
+                    const totalMarks = r.totalMarks ?? 0;
+                    const violations = r.violations || { tabSwitches: 0, faceAlerts: 0 };
+                    const percentage = totalMarks > 0 ? ((marks / totalMarks) * 100).toFixed(1) : "0.0";
+                    
                     html += `
                         <div class="card">
                             <div class="card-header">
@@ -184,9 +189,22 @@
                                 ${statusBadge}
                             </div>
                             <div class="card-body">
-                                <p><strong>Score:</strong> ${r.marks}/${r.totalMarks}</p>
-                                <p><strong>Percentage:</strong> ${((r.marks / r.totalMarks) * 100).toFixed(1)}%</p>
-                                <p><strong>Date:</strong> ${formatDate(r.submittedAt)}</p>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <div>
+                                        <p><strong>Score:</strong> ${marks}/${totalMarks}</p>
+                                        <p><strong>Percentage:</strong> ${percentage}%</p>
+                                        <p><strong>Date:</strong> ${formatDate(r.submittedAt)}</p>
+                                    </div>
+                                    <div style="border-left: 1px solid #30363d; padding-left: 1rem;">
+                                        <p style="color: #8b949e; font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">Proctoring Report</p>
+                                        <p style="color: ${violations.tabSwitches > 0 ? '#f85149' : '#3fb950'}">
+                                            <i class="fas fa-external-link-alt"></i> Tab Switches: ${violations.tabSwitches}
+                                        </p>
+                                        <p style="color: ${violations.faceAlerts > 0 ? '#f85149' : '#3fb950'}">
+                                            <i class="fas fa-user-shield"></i> Face Alerts: ${violations.faceAlerts}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>`;
                 });

@@ -94,6 +94,16 @@ export const getResults = query({
                     const ratio = (exam?.passingMarks || 0) / (exam?.totalMarks || 1);
                     const requiredMarks = actualTotalMarks * ratio;
 
+                    // Fetch proctoring summary for this student and exam
+                    const logs = await ctx.db
+                        .query("proctoringLogs")
+                        .withIndex("by_exam", (q) => q.eq("examId", s.examId))
+                        .filter((q) => q.eq(q.field("studentId"), s.studentId))
+                        .collect();
+
+                    const tabSwitches = logs.filter(l => l.eventType === 'tab_switch').length;
+                    const faceAlerts = logs.filter(l => l.eventType === 'face_not_detected' || l.eventType === 'face_missing' || l.eventType === 'multiple_faces' || l.eventType === 'looking_away').length;
+
                     return {
                         ...s,
                         studentName: student?.name || "Unknown",
@@ -103,7 +113,11 @@ export const getResults = query({
                         totalMarks: actualTotalMarks,
                         passingMarks: requiredMarks,
                         marks: s.marksObtained || 0,
-                        passed: (s.marksObtained || 0) >= requiredMarks
+                        passed: (s.marksObtained || 0) >= requiredMarks,
+                        violations: {
+                            tabSwitches,
+                            faceAlerts
+                        }
                     };
                 })
             );
@@ -126,6 +140,16 @@ export const getResults = query({
                     const ratio = (exam?.passingMarks || 0) / (exam?.totalMarks || 1);
                     const requiredMarks = actualTotalMarks * ratio;
 
+                    // Fetch proctoring summary for this student and exam
+                    const logs = await ctx.db
+                        .query("proctoringLogs")
+                        .withIndex("by_exam", (q) => q.eq("examId", s.examId))
+                        .filter((q) => q.eq(q.field("studentId"), s.studentId))
+                        .collect();
+
+                    const tabSwitches = logs.filter(l => l.eventType === 'tab_switch').length;
+                    const faceAlerts = logs.filter(l => l.eventType === 'face_not_detected' || l.eventType === 'face_missing' || l.eventType === 'multiple_faces' || l.eventType === 'looking_away').length;
+
                     return {
                         ...s,
                         examTitle: exam?.title || "Unknown Exam",
@@ -133,7 +157,11 @@ export const getResults = query({
                         totalMarks: actualTotalMarks,
                         passingMarks: requiredMarks,
                         marks: s.marksObtained || 0,
-                        passed: (s.marksObtained || 0) >= requiredMarks
+                        passed: (s.marksObtained || 0) >= requiredMarks,
+                        violations: {
+                            tabSwitches,
+                            faceAlerts
+                        }
                     };
                 })
             );
