@@ -171,9 +171,19 @@ export const getResults = query({
 });
 
 export const getSubmissionsByExam = query({
-    args: { examId: v.id("exams") },
+    args: { 
+        examId: v.id("exams"), 
+        teacherId: v.optional(v.id("users")), 
+        isAdmin: v.optional(v.boolean()) 
+    },
     handler: async (ctx, args) => {
         const exam = await ctx.db.get(args.examId);
+        if (!exam) return [];
+
+        // Security check: Only the creator of the exam or an admin can view student results
+        if (!args.isAdmin && args.teacherId && exam.createdBy !== args.teacherId) {
+            return []; // Unauthorized access
+        }
         
         const examQuestions = await ctx.db.query("examQuestions").withIndex("by_exam", (q) => q.eq("examId", args.examId)).collect();
         let actualTotalMarks = 0;
@@ -193,14 +203,28 @@ export const getSubmissionsByExam = query({
         return await Promise.all(
             submissions.map(async (s) => {
                 const student = await ctx.db.get(s.studentId);
+                
+                const logs = await ctx.db
+                    .query("proctoringLogs")
+                    .withIndex("by_exam", (q) => q.eq("examId", args.examId))
+                    .filter((q) => q.eq(q.field("studentId"), s.studentId))
+                    .collect();
+
+                const tabSwitches = logs.filter(l => l.eventType === 'tab_switch').length;
+                const faceAlerts = logs.filter(l => l.eventType === 'face_not_detected' || l.eventType === 'face_missing' || l.eventType === 'multiple_faces' || l.eventType === 'looking_away').length;
+
                 return {
                     ...s,
-                    student_name: student?.name,
-                    student_email: student?.email,
+                    student_name: student?.name || "Unknown",
+                    student_email: student?.email || "Unknown",
                     totalMarks: actualTotalMarks,
                     passingMarks: requiredMarks,
                     marks: s.marksObtained || 0,
-                    passed: (s.marksObtained || 0) >= requiredMarks
+                    passed: (s.marksObtained || 0) >= requiredMarks,
+                    violations: {
+                        tabSwitches,
+                        faceAlerts
+                    }
                 };
             })
         );

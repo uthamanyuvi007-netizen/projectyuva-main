@@ -152,72 +152,203 @@
             </div>
         </main>
     </div>
-
     <script type="module">
         import {
-            getResults, renderSidebar, logout, formatDate, checkRole
+            getResults, getExamSubmissions, renderSidebar, logout, formatDate, checkRole
         } from "./js/main.js";
 
         window.logout = logout;
 
         if (!checkRole('student', 'teacher', 'admin')) { }
         renderSidebar();
-
         document.addEventListener('DOMContentLoaded', async () => {
-            await loadResults();
+            const urlParams = new URLSearchParams(window.location.search);
+            const examId = urlParams.get('exam');
+            const currentUser = JSON.parse(localStorage.getItem('user'));
+            
+            // Update page header based on role and context
+            const pageTitle = document.querySelector('.page-title');
+            const homeLink = document.querySelector('.header-actions a');
+            
+            if (currentUser.role === 'teacher') {
+                homeLink.href = '/teacher-dashboard';
+                pageTitle.textContent = examId ? 'Student Results' : 'Exam Results';
+            } else if (currentUser.role === 'admin') {
+                homeLink.href = '/admin-dashboard';
+                pageTitle.textContent = 'Results Management';
+            } else {
+                homeLink.href = '/student-dashboard';
+                pageTitle.textContent = 'My Results';
+            }
+
+            await loadResults(examId, currentUser);
         });
 
-        async function loadResults() {
-            const result = await getResults();
+        async function loadResults(examId, user) {
             const container = document.getElementById('results-container');
+            const isTeacherFlow = (user.role === 'teacher' || user.role === 'admin') && examId;
 
-            if (result.success && result.data.length > 0) {
-                let html = '<div class="results-grid">';
-                result.data.forEach(r => {
-                    const statusBadge = r.passed
-                        ? '<span class="badge badge-success">Passed</span>'
-                        : '<span class="badge badge-danger">Failed</span>';
-                    const marks = r.marks ?? 0;
-                    const totalMarks = r.totalMarks ?? 0;
-                    const violations = r.violations || { tabSwitches: 0, faceAlerts: 0 };
-                    const percentage = totalMarks > 0 ? ((marks / totalMarks) * 100).toFixed(1) : "0.0";
-                    
-                    html += `
+            if (isTeacherFlow) {
+                // Teacher viewing student results for a specific exam
+                const result = await getExamSubmissions(examId);
+                
+                if (result.success && result.data.length > 0) {
+                    let html = `
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">${r.examTitle || 'Exam'}</h3>
-                                ${statusBadge}
+                                <h3 class="card-title">Student Submissions</h3>
+                                <div class="badge badge-info">${result.data.length} Total</div>
                             </div>
-                            <div class="card-body">
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                    <div>
-                                        <p><strong>Score:</strong> ${marks}/${totalMarks}</p>
-                                        <p><strong>Percentage:</strong> ${percentage}%</p>
-                                        <p><strong>Date:</strong> ${formatDate(r.submittedAt)}</p>
+                            <div class="card-body" style="padding: 0;">
+                                <div class="table-container" style="overflow-x: auto;">
+                                    <table class="table" style="width: 100%; border-spacing: 0;">
+                                        <thead>
+                                            <tr style="background: #21262d; text-align: left;">
+                                                <th style="padding: 1rem;">Student Name</th>
+                                                <th style="padding: 1rem;">Marks Obtained</th>
+                                                <th style="padding: 1rem;">Percentage</th>
+                                                <th style="padding: 1rem;">Status</th>
+                                                <th style="padding: 1rem;">Proctoring Report</th>
+                                                <th style="padding: 1rem;">Submitted At</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>`;
+                    
+                    result.data.forEach(r => {
+                        const marks = r.marks || 0;
+                        const total = r.totalMarks || 0;
+                        const percentage = total > 0 ? ((marks / total) * 100).toFixed(1) : "0.0";
+                        const statusBadge = r.passed 
+                            ? '<span class="badge badge-success">Passed</span>' 
+                            : '<span class="badge badge-danger">Failed</span>';
+                        
+                        const tabSwitches = r.violations?.tabSwitches || 0;
+                        const faceAlerts = r.violations?.faceAlerts || 0;
+                        const isClean = tabSwitches === 0 && faceAlerts === 0;
+
+                        html += `
+                            <tr style="border-bottom: 1px solid #30363d;">
+                                <td style="padding: 1rem;">
+                                    <div style="font-weight: 600;">${r.student_name}</div>
+                                    <div style="color: #8b949e; font-size: 0.8rem;">${r.student_email || ''}</div>
+                                </td>
+                                <td style="padding: 1rem;">${marks} / ${total}</td>
+                                <td style="padding: 1rem;">${percentage}%</td>
+                                <td style="padding: 1rem;">${statusBadge}</td>
+                                <td style="padding: 1rem;">
+                                    <div style="font-size: 0.85rem; color: ${tabSwitches > 0 ? '#f85149' : '#8b949e'};">
+                                        <i class="fas fa-external-link-alt"></i> Tabs: ${tabSwitches}
                                     </div>
-                                    <div style="border-left: 1px solid #30363d; padding-left: 1rem;">
-                                        <p style="color: #8b949e; font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">Proctoring Report</p>
-                                        <p style="color: ${violations.tabSwitches > 0 ? '#f85149' : '#3fb950'}">
-                                            <i class="fas fa-external-link-alt"></i> Tab Switches: ${violations.tabSwitches}
-                                        </p>
-                                        <p style="color: ${violations.faceAlerts > 0 ? '#f85149' : '#3fb950'}">
-                                            <i class="fas fa-user-shield"></i> Face Alerts: ${violations.faceAlerts}
-                                        </p>
+                                    <div style="font-size: 0.85rem; color: ${faceAlerts > 0 ? '#f85149' : '#8b949e'};">
+                                        <i class="fas fa-user-shield"></i> Alerts: ${faceAlerts}
                                     </div>
-                                </div>
-                            </div>
+                                </td>
+                                <td style="padding: 1rem; font-size: 0.85rem; color: #8b949e;">
+                                    ${formatDate(r.submittedAt)}
+                                </td>
+                            </tr>`;
+                    });
+                    
+                    html += `</tbody></table></div></div></div>`;
+                    container.innerHTML = html;
+                } else if (!result.success) {
+                    container.innerHTML = `<div style="text-align: center; padding: 3rem; color: #f85149;"><i class="fas fa-exclamation-triangle"></i> Error: ${result.message}</div>`;
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state" style="text-align: center; padding: 5rem 2rem; color: #8b949e;">
+                            <div class="empty-icon" style="font-size: 4rem; opacity: 0.3; margin-bottom: 1rem;">📩</div>
+                            <h3 class="empty-title">No Submissions Yet</h3>
+                            <p>No students have submitted this exam yet.</p>
                         </div>`;
-                });
-                html += '</div>';
-                container.innerHTML = html;
+                }
             } else {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">📊</div>
-                        <h3 class="empty-title">No Results Yet</h3>
-                        <p class="empty-description">You haven't attempted any exams yet.</p>
-                        <a href="/exams" class="btn btn-primary" style="margin-top: 1rem;">View Available Exams</a>
-                    </div>`;
+                // Student flow OR Teacher/Admin flow without a specific examId
+                if (user.role === 'teacher' || user.role === 'admin') {
+                    // Show list of exams for teachers to pick from
+                    const result = await getExams();
+                    
+                    if (result.success && result.data.length > 0) {
+                        let html = '<div class="results-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem;">';
+                        result.data.forEach(e => {
+                            html += `
+                                <div class="card">
+                                    <div class="card-header" style="background: linear-gradient(135deg, #21262d 0%, #161b22 100%); border-bottom: 1px solid #30363d; padding: 1.5rem;">
+                                        <h3 class="card-title" style="margin: 0; font-size: 1.25rem;">${e.title}</h3>
+                                        <span style="color: #8b949e; font-size: 0.85rem;">${e.subject}</span>
+                                    </div>
+                                    <div class="card-body" style="padding: 1.5rem;">
+                                        <div style="margin-bottom: 1.5rem;">
+                                            <p style="margin: 0.5rem 0; color: #c9d1d9;"><i class="fas fa-calendar-alt" style="width: 20px; color: #6C63FF;"></i> Scheduled: ${formatDate(e.scheduledDate)}</p>
+                                            <p style="margin: 0.5rem 0; color: #c9d1d9;"><i class="fas fa-users" style="width: 20px; color: #6C63FF;"></i> Status: <span class="badge badge-${e.status === 'active' ? 'success' : 'warning'}">${e.status}</span></p>
+                                        </div>
+                                        <a href="/results?exam=${e._id}" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                                            <i class="fas fa-list-check"></i> View Student Marks
+                                        </a>
+                                    </div>
+                                </div>`;
+                        });
+                        html += '</div>';
+                        container.innerHTML = html;
+                    } else {
+                        container.innerHTML = `
+                            <div class="empty-state" style="text-align: center; padding: 5rem 2rem; color: #8b949e;">
+                                <div class="empty-icon" style="font-size: 4rem; opacity: 0.3; margin-bottom: 1rem;">📝</div>
+                                <h3 class="empty-title">No Exams Found</h3>
+                                <p>You haven't created any exams yet.</p>
+                                <a href="/create-exam" class="btn btn-primary" style="margin-top: 1.5rem;">Create Your First Exam</a>
+                            </div>`;
+                    }
+                } else {
+                    // Original Student flow
+                    const result = await getResults();
+                    
+                    if (result.success && result.data.length > 0) {
+                        let html = '<div class="results-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem;">';
+                        result.data.forEach(r => {
+                            const statusBadge = r.passed
+                                ? '<span class="badge badge-success">Passed</span>'
+                                : '<span class="badge badge-danger">Failed</span>';
+                            const percentage = r.totalMarks > 0 ? ((r.marks / r.totalMarks) * 100).toFixed(1) : "0.0";
+                            const violations = r.violations || { tabSwitches: 0, faceAlerts: 0 };
+                            
+                            html += `
+                                <div class="card">
+                                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #30363d; padding: 1.25rem;">
+                                        <h3 class="card-title" style="margin: 0; font-size: 1.1rem;">${r.examTitle || 'Exam'}</h3>
+                                        ${statusBadge}
+                                    </div>
+                                    <div class="card-body" style="padding: 1.5rem;">
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                            <div>
+                                                <p style="margin: 0.4rem 0;"><strong style="color: #8b949e;">Score:</strong> ${r.marks}/${r.totalMarks}</p>
+                                                <p style="margin: 0.4rem 0;"><strong style="color: #8b949e;">Percentage:</strong> ${percentage}%</p>
+                                                <p style="margin: 0.4rem 0;"><strong style="color: #8b949e;">Date:</strong> ${formatDate(r.submittedAt)}</p>
+                                            </div>
+                                            <div style="border-left: 1px solid #30363d; padding-left: 1.25rem;">
+                                                <p style="color: #8b949e; font-size: 0.75rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Proctoring Summary</p>
+                                                <p style="margin: 0.3rem 0; color: ${violations.tabSwitches > 0 ? '#f85149' : '#3fb950'}; font-size: 0.9rem;">
+                                                    <i class="fas fa-external-link-alt" style="width: 20px;"></i> Tabs: ${violations.tabSwitches}
+                                                </p>
+                                                <p style="margin: 0.3rem 0; color: ${violations.faceAlerts > 0 ? '#f85149' : '#3fb950'}; font-size: 0.9rem;">
+                                                    <i class="fas fa-user-shield" style="width: 20px;"></i> Alerts: ${violations.faceAlerts}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                        });
+                        html += '</div>';
+                        container.innerHTML = html;
+                    } else {
+                        container.innerHTML = `
+                            <div class="empty-state" style="text-align: center; padding: 5rem 2rem; color: #8b949e;">
+                                <div class="empty-icon" style="font-size: 4rem; opacity: 0.3; margin-bottom: 1rem;">📊</div>
+                                <h3 class="empty-title">No Results Yet</h3>
+                                <p>No results found in your account.</p>
+                                <a href="/exams" class="btn btn-primary" style="margin-top: 1.5rem;">Browse Exams</a>
+                            </div>`;
+                    }
+                }
             }
         }
     </script>

@@ -161,7 +161,11 @@ async function deleteExam(id) {
 
 async function getExamSubmissions(examId) {
     try {
-        const data = await convex.query(api.submissions.getSubmissionsByExam, { examId });
+        const data = await convex.query(api.submissions.getSubmissionsByExam, { 
+            examId,
+            teacherId: currentUser.role === 'teacher' ? currentUser.id : undefined,
+            isAdmin: currentUser.role === 'admin'
+        });
         return { success: true, data };
     } catch (e) { return { success: false, message: e.message }; }
 }
