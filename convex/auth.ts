@@ -1,12 +1,12 @@
-"use node";
 import { action } from "./_generated/server";
 import { v } from "convex/values";
 import { api } from "./_generated/api";
 import { Id, Doc } from "./_generated/dataModel";
 import * as bcrypt from "bcryptjs";
-import * as jwt from "jsonwebtoken";
+import * as jose from "jose";
 
 const JWT_SECRET = 'online-exam-proctoring-secret-key-2024';
+const secret = new TextEncoder().encode(JWT_SECRET);
 
 export const register = action({
     args: {
@@ -56,11 +56,16 @@ export const login = action({
             return { success: false, message: "Invalid credentials" };
         }
 
-        const token: string = jwt.sign(
-            { id: user._id, name: user.name, role: user.role },
-            JWT_SECRET,
-            { expiresIn: '24h' }
-        );
+        // Create JWT using jose (Web Standard compliant)
+        const token = await new jose.SignJWT({ 
+                id: user._id, 
+                name: user.name, 
+                role: user.role 
+            })
+            .setProtectedHeader({ alg: 'HS256' })
+            .setIssuedAt()
+            .setExpirationTime('24h')
+            .sign(secret);
 
         return {
             success: true,
